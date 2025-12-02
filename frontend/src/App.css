@@ -1,6 +1,3 @@
-/* Full App.css - Enhanced for Professional Look (No JS Changes Required) */
-
-/* Base Styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -15,14 +12,12 @@ body {
   min-height: 100vh;
 }
 
-/* App Container */
 .App {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-/* Header */
 .App-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -39,7 +34,6 @@ body {
   font-size: 1.1rem;
 }
 
-/* Upload Form */
 .upload-form {
   background: #fff;
   padding: 2rem;
@@ -102,7 +96,6 @@ body {
   cursor: not-allowed;
 }
 
-/* Status Messages */
 .status {
   padding: 1rem;
   border-radius: 8px;
@@ -120,7 +113,6 @@ body {
   color: #c62828;
 }
 
-/* Enhanced Video Player Section (Your Provided Snippet - Polished) */
 .video-player {
   margin-top: 2rem;
   padding: 2rem;
@@ -245,7 +237,6 @@ body {
   font-size: 1.25rem;
 }
 
-/* Footer */
 footer {
   text-align: center;
   margin-top: 3rem;
@@ -263,7 +254,6 @@ footer a:hover {
   text-decoration: underline;
 }
 
-/* Spinner (Global) */
 .spinner {
   border: 4px solid #f3f3f3;
   border-top: 4px solid #1976d2;
@@ -279,7 +269,6 @@ footer a:hover {
   100% { transform: rotate(360deg); }
 }
 
-/* Error Class (Global) */
 .error {
   color: #d32f2f;
   background: #ffebee;
