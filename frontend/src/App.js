@@ -29,9 +29,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>English to Indian Languages Video Dubber</h1>
-        <p className="subtitle">
-          Hindi • Tamil • Telugu • Kannada • Malayalam
-        </p>
+        
       </header>
 
       <main>
@@ -44,7 +42,7 @@ function App() {
         {loading && (
           <div className="status loading">
             <div className="spinner"></div>
-            <p>Processing video… This may take 30-90 seconds.</p>
+            <p>Processing video… .</p>
           </div>
         )}
 
@@ -76,3 +74,4 @@ function App() {
 }
 
 export default App;
+    
