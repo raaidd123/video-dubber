@@ -1,91 +1,94 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
-const UploadForm = ({ onSuccess, onError, onUploadStart }) => {
+const UploadForm = ({ backendBase = "http://localhost:5000", onSuccess, onError, onUploadStart }) => {
   const [file, setFile] = useState(null);
-  const [targetLang, setTargetLang] = useState('hi');
+  const [language, setLanguage] = useState("hi");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+
+  const LANG_OPTIONS = [
+    { name: "Assamese", code: "as" },
+    { name: "Bengali", code: "bn" },
+    { name: "Bodo", code: "brx" },
+    { name: "Dogri", code: "doi" },
+    { name: "Gujarati", code: "gu" },
+    { name: "Hindi", code: "hi" },
+    { name: "Kannada", code: "kn" },
+    { name: "Kashmiri", code: "ks" },
+    { name: "Konkani", code: "kok" },
+    { name: "Maithili", code: "mai" },
+    { name: "Malayalam", code: "ml" },
+    { name: "Manipuri", code: "mni" },
+    { name: "Marathi", code: "mr" },
+    { name: "Nepali", code: "ne" },
+    { name: "Odia", code: "or" },
+    { name: "Punjabi", code: "pa" },
+    { name: "Sanskrit", code: "sa" },
+    { name: "Santali", code: "sat" },
+    { name: "Sindhi", code: "sd" },
+    { name: "Tamil", code: "ta" },
+    { name: "Telugu", code: "te" },
+    { name: "Urdu", code: "ur" }
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!file) {
-      setError('Please select a video file');
-      return;
-    }
-
-    // Reset & notify parent
-    setError('');
+    if (!file) return setError("Please upload an MP4 file.");
+    setError("");
     setLoading(true);
-    onUploadStart?.();  // Trigger loading spinner in App.js
+    onUploadStart?.();
 
     const formData = new FormData();
-    formData.append('video', file);
-    formData.append('target_lang', targetLang);
+    formData.append("video", file);
+    formData.append("target_lang", language); // matches backend expectation
 
     try {
-      const response = await axios.post('http://localhost:5000/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        timeout: 300000, // 5 minutes (for long processing)
-        onUploadProgress: (progressEvent) => {
-          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          console.log(`Upload: ${percent}%`);
-          // Optional: Add progress bar here later
-        },
+      const res = await axios.post(`${backendBase}/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        timeout: 0, // long uploads / processing — disable timeout
       });
-
-      onSuccess(response.data);
+      onSuccess?.(res.data);
     } catch (err) {
-      const message = err.response?.data?.error || err.message || 'Upload failed';
-      setError(message);
-      onError?.(message);
+      const msg = err.response?.data?.error || err.message;
+      setError(msg);
+      onError?.(msg);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="upload-form">
+    <form onSubmit={handleSubmit} className="upload-form" style={{ maxWidth: 640 }}>
       <div className="form-group">
-        <label htmlFor="video">Upload MP4 Video</label>
+        <label>Upload MP4</label>
         <input
-          id="video"
           type="file"
           accept="video/mp4"
-          onChange={(e) => setFile(e.target.files[0])}
-          required
+          onChange={(e) => { setFile(e.target.files?.[0] || null); }}
           disabled={loading}
         />
       </div>
 
       <div className="form-group">
-        <label htmlFor="lang">Target Language</label>
+        <label>Target language</label>
         <select
-          id="lang"
-          value={targetLang}
-          onChange={(e) => setTargetLang(e.target.value)}
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
           disabled={loading}
+          style={{ padding: 8, width: "100%" }}
         >
-          <option value="hi">Hindi</option>
-          <option value="ta">Tamil</option>
-          <option value="te">Telugu</option>
-          <option value="kn">Kannada</option>
-          <option value="ml">Malayalam</option>
+          {LANG_OPTIONS.map((l) => (
+            <option key={l.code} value={l.code}>{l.name}</option>
+          ))}
         </select>
       </div>
 
-      <button type="submit" disabled={loading || !file} className="submit-btn">
-        {loading ? (
-          <>
-            <span className="spinner-small"></span> Dubbing in progress…
-          </>
-        ) : (
-          'Dub Video'
-        )}
+      <button type="submit" disabled={loading || !file} style={{ padding: "10px 14px" }}>
+        {loading ? "Uploading & processing…" : "Upload & Dub"}
       </button>
 
-      {error && <p className="error">{error}</p>}
+      {error && <div style={{ color: "crimson", marginTop: 8 }}>{error}</div>}
     </form>
   );
 };
